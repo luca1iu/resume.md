@@ -38,19 +38,21 @@ generate the CV in German version.
 ## Usage
 
 ### Generate English Version of CV
+
+
 1. Download [resume_english.py](resume_english.py) and
    [resume_english.css](resume_english.css) and [resume_with_avatar_english.py](resume_with_avatar_english.py) (or make a copy of this repository, forking, or
    cloning).
-2. Edit [resume_english.md](resume_english.md) (the placeholder text is taken
-   with thanks from
-   the [JSON Resume Project](https://jsonresume.org/themes/))
-3. Run `python3 resume_with_avatar_english.py` to build resume_english.html and resume_english.pdf.
+2. save your avatar image as `avatar.png` in the same folder.
+3. Edit [resume_english.md](resume_english.md) 
+4. Run `python3 resume_with_avatar_english.py` to build resume_english.html and resume_english.pdf.
 
 ### Generate German Version of CV
 1. Download [resume_german.py](resume_german.py) and
    [resume_german.css](resume_german.css) and [resume_with_avatar_german.py](resume_with_avatar_german.py)(or make a copy of this repository, forking, or cloning).
-2. Edit [resume_german.md](resume_german.md)
-3. Run `python3 resume_with_avatar_german.py` to build resume_german.html and resume_german.pdf.
+2. save your avatar image as `avatar.png` in the same folder.
+3. Edit [resume_german.md](resume_german.md)
+4. Run `python3 resume_with_avatar_german.py` to build resume_german.html and resume_german.pdf.
 
 Notes:
     * Use `--no-html` or `--no-pdf` to disable HTML or PDF output.
