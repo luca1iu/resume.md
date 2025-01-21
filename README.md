@@ -1,21 +1,33 @@
 # resume.md
 
-![Resume](resume.png)
+Write your english resume in
+[Markdown](https://github.com/luca1iu/resume.md/blob/main/resume_english.md) and your german resume
+in [Markdown](https://github.com/luca1iu/resume.md/blob/main/resume_german.md)
+style it with [CSS](https://github.com/luca1iu/resume.md/blob/main/resume_english.css)
+and [CSS](https://github.com/luca1iu/resume.md/blob/main/resume_german.css), output
+to [HTML](https://github.com/luca1iu/resume.md/blob/main/resume_english.html)/[HTML](https://github.com/luca1iu/resume.md/blob/main/resume_german.html)
+and
+[PDF](https://github.com/luca1iu/resume.md/blob/main/resume_english.pdf)/[PDF](https://github.com/luca1iu/resume.md/blob/main/resume_english.pdf).
 
-Write your resume in
-[Markdown](https://raw.githubusercontent.com/mikepqr/resume.md/main/resume.md),
-style it with [CSS](resume.css), output to [HTML](resume.html) and
-[PDF](resume.pdf).
+## New Feature
 
-
-## New Feature -  Add your avatar image to resume
+### 1. Add your avatar image to resume
 
 Now, with the latest feature, you can also include an avatar image in your resume!
 
-1. Place the `avatar.png` with your avatar or change `avatar_path` to your avatar path in `resume_with_avatar.py`
-2. run `resume_with_avatar.py`
+1. Place the `avatar.png` with your avatar or change `avatar_path` to your avatar path in
+   `resume_with_avatar_english.py`
+2. run `resume_with_avatar_english.py`
 
 ![image.png](assets/image.png)
+
+### 2. generate CV in English and German Version
+
+if you want to have a english version of CV, you can edit `resume_english.md` and run `resume_with_avatar_english.py` to
+generate the CV in English version.
+
+if you want to have a German version of CV, you can edit `resume_german.md` and run `resume_with_avatar_german.py` to
+generate the CV in German version.
 
 ## Prerequisites
 
@@ -25,21 +37,30 @@ Now, with the latest feature, you can also include an avatar image in your resum
 
 ## Usage
 
-1. Download [resume.py](resume.py), [resume.md](resume.md) and
-   [resume.css](resume.css) (or make a copy of this repository by [using the
-   template](https://github.com/mikepqr/resume.md/generate), forking, or
+### Generate English Version of CV
+1. Download [resume_english.py](resume_english.py) and
+   [resume_english.css](resume_english.css) (or make a copy of this repository, forking, or
    cloning).
-2. Edit [resume.md](resume.md) (the placeholder text is taken with thanks from
+2. Edit [resume_english.md](resume_english.md) (the placeholder text is taken
+   with thanks from
    the [JSON Resume Project](https://jsonresume.org/themes/))
-3. Run `python3 resume.py` to build resume.html and resume.pdf.
+3. Run `python3 resume_with_avatar_english.py` to build resume_english.html and resume_english.pdf.
 
-   - Use `--no-html` or `--no-pdf` to disable HTML or PDF output.
-   - Use `--chrome-path=/path/to/chrome` if resume.py cannot find your Chrome
-     or Chromium executable.
+### Generate German Version of CV
+1. Download [resume_german.py](resume_german.py) and
+   [resume_german.css](resume_german.css) (or make a copy of this repository, forking, or cloning).
+2. Edit [resume_german.md](resume_german.md)
+3. Run `python3 resume_with_avatar_german.py` to build resume_german.html and resume_german.pdf.
+
+Notes:
+    * Use `--no-html` or `--no-pdf` to disable HTML or PDF output.
+    * Use `--chrome-path=/path/to/chrome` if resume.py cannot find your Chrome
+      or Chromium executable.
 
 ## Customization
 
-Edit [resume.css](resume.css) to change the appearance of your resume. The
+Edit [resume_english.css](resume_english.css) to change the appearance of your english resume. and
+edit [resume_german.css](resume_german.css) to change the appearance of your German resume. The
 default style is extremely generic, which is perhaps what you want in a resume,
 but CSS gives you a lot of flexibility. See, e.g. [The Tech Resume
 Inside-Out](https://www.thetechinterview.com/) for good advice about what a
@@ -51,12 +72,4 @@ adding rules under the `@media print` CSS selector.
 Change the margins and paper size of the PDF version by editing the [`@page` CSS
 rule](https://developer.mozilla.org/en-US/docs/Web/CSS/%40page/size).
 
-[python-markdown](https://python-markdown.github.io/) is by default a very basic
-markdown compiler, but it has a number of optional extensions that you may want
-to enable (by adding to [the list of extensions
-here](https://github.com/mikepqr/resume.md/blob/f1b0699a9b66833cb67bb59111f45a09ed3c0f7e/resume.py#L112)).
-<code>[a
-href="https://python-markdown.github.io/extensions/attr_list/"](a%0Ahref=%22https://python-markdown.github.io/extensions/attr_list/%22)attr_list</a></code>
-in particular may by useful if you are editing the CSS.
-[abbreviations](https://python-markdown.github.io/extensions/abbreviations/)
-extension is already enabled.
+

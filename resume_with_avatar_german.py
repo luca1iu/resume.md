@@ -4,13 +4,16 @@ import base64
 import itertools
 import logging
 import os
-import re
 import shutil
 import subprocess
 import sys
 import tempfile
-
 import markdown
+import re
+
+# you could replace "avatar.png" with your own avatar image
+# or set avatar_path to your own image path
+avatar_path = "avatar.png"
 
 preamble = """\
 <html lang="en">
@@ -23,6 +26,33 @@ preamble = """\
 </head>
 <body>
 <div id="resume">
+    <div id="resume-header">
+        <div id='name' style="display: flex; justify-content: center; align-items: center; margin-bottom: 0px;">
+            <h1 style="margin-left:-140px">{title}</h1>
+        </div>
+
+        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: -10px;">
+            <!-- the first long group -->
+            <div style="flex-basis: 44%; text-align: left; margin-left:-20px">
+                <ul style="list-style: none; padding: 0;">
+                    {first_column}
+                </ul>
+            </div>
+
+
+            <!-- the second short group -->
+            <div style="flex-basis: 41%; text-align: left; margin-left:-5px">
+                <ul style="list-style: none; padding: 0;">
+                    {second_column}
+                </ul>
+            </div>
+
+            <!-- the avatar -->
+            <div style="flex-basis: 20%; text-align: right; align-self: flex-start;">
+                {img}
+            </div>
+        </div>
+    </div>
 """
 
 postamble = """\
@@ -70,6 +100,14 @@ CHROME_GUESSES_LINUX = [
 ]
 
 
+def get_avatar_base64(image_path: str) -> str:
+    """
+    Read the avatar image and return it as a base64 string.
+    """
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+
+
 def guess_chrome_path() -> str:
     if sys.platform == "darwin":
         guesses = CHROME_GUESSES_MACOS
@@ -97,7 +135,59 @@ def title(md: str) -> str:
     )
 
 
-def make_html(md: str, prefix: str = "resume") -> str:
+def extract_header(md: str) -> str:
+    items = []
+    for line in md.splitlines():
+        if line.startswith("## "):  # Stop processing at the first "## "
+            break
+        if line.startswith("- "):  # Collect lines starting with "- "
+            items.append(line)
+    print("header:", items)
+    return "\n".join(items)
+
+
+def split_by_length(header: str) -> str:
+    """
+    Split the header lines into two groups based on line lengths (excluding parentheses and their content).
+    If the number of lines is odd, the longer group has one extra line.
+
+    Args:
+        header (str): The multiline string from extract_header.
+
+    Returns:
+        str: Two groups formatted as a single string.
+    """
+
+    # Helper function to calculate line length excluding parentheses content
+    def line_length(line: str) -> int:
+        clean_line = re.sub(r"\(.*?\)", "", line)  # Remove parentheses and their content
+        return len(clean_line.strip())
+
+    # Split the input header into lines
+    lines = header.splitlines()
+
+    # Sort lines by their effective length in descending order
+    sorted_lines = sorted(lines, key=line_length, reverse=True)
+
+    # Determine the split point
+    split_index = (len(sorted_lines) + 1) // 2  # Longer group gets the extra line if odd
+
+    # Divide into two groups
+    longer_group = "\n".join(sorted_lines[:split_index])
+    shorter_group = "\n".join(sorted_lines[split_index:])
+
+    # Combine groups into the final output
+    return longer_group, shorter_group
+
+
+# find the first line that starts with "## ", and return it and all rest lines of the text
+def extract_main_section(md: str) -> str:
+    for i, line in enumerate(md.splitlines()):
+        if line.startswith("## "):
+            return "\n".join(md.splitlines()[i:])
+
+
+def make_html(md: str, prefix: str = "resume", avatar_path: str = avatar_path) -> str:
     """
     Compile md to HTML and prepend/append preamble/postamble.
 
@@ -109,10 +199,18 @@ def make_html(md: str, prefix: str = "resume") -> str:
     except FileNotFoundError:
         print(prefix + ".css not found. Output will by unstyled.")
         css = ""
+
+    avatar_base64 = get_avatar_base64(avatar_path)
+    avatar_html = f'<img src="data:image/png;base64,{avatar_base64}" alt="Avatar">'
+    longer_group, shorter_group = split_by_length(extract_header(md))
+    first_column = markdown.markdown(longer_group, extensions=["smarty", "abbr"])[4:-5]
+    second_column = markdown.markdown(shorter_group, extensions=["smarty", "abbr"])[4:-5]
+
     return "".join(
         (
-            preamble.format(title=title(md), css=css),
-            markdown.markdown(md, extensions=["smarty", "abbr"]),
+            preamble.format(title=title(md), css=css, img=avatar_html, first_column=first_column,
+                            second_column=second_column),
+            markdown.markdown(extract_main_section(md), extensions=["smarty", "abbr"]),
             postamble,
         )
     )
@@ -132,7 +230,7 @@ def write_pdf(html: str, prefix: str = "resume", chrome: str = "") -> None:
         # https://developer.chrome.com/docs/chromium/new-headless.
         "--no-pdf-header-footer",
         "--enable-logging=stderr",
-        "--log-level=2",
+        "--log-level=1",
         "--in-process-gpu",
         "--disable-gpu",
     ]
@@ -145,7 +243,7 @@ def write_pdf(html: str, prefix: str = "resume", chrome: str = "") -> None:
     # https://bugs.python.org/issue26660. If we ever drop Python 3.9 support we
     # can use TemporaryDirectory with ignore_cleanup_errors=True as a context
     # manager.
-    tmpdir = tempfile.mkdtemp(prefix="resume.md_")
+    tmpdir = tempfile.mkdtemp(prefix="resume_german.md_")
     options.append(f"--crash-dumps-dir={tmpdir}")
     options.append(f"--user-data-dir={tmpdir}")
 
@@ -178,8 +276,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "file",
-        help="markdown input file [resume.md]",
-        default="resume.md",
+        help="markdown input file [resume_german.md]",
+        default="resume_german.md",
         nargs="?",
     )
     parser.add_argument(
@@ -195,6 +293,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--chrome-path",
         help="Path to Chrome or Chromium executable",
+    )
+    parser.add_argument(
+        "--avatar",
+        help="Path to avatar image",
+        default="avatar.png",
     )
     parser.add_argument("-q", "--quiet", action="store_true")
     parser.add_argument("--debug", action="store_true")

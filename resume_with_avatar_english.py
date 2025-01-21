@@ -27,11 +27,11 @@ preamble = """\
 <body>
 <div id="resume">
     <div id="resume-header">
-        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-            <h1 style="margin: 0; margin-left: -40px;">{title}</h1>
+        <div id='name' style="display: flex; justify-content: center; align-items: center; margin-bottom: 0px;">
+            <h1 style="margin-left:-140px">{title}</h1>
         </div>
 
-        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 0px;">
             <!-- the first long group -->
             <div style="flex-basis: 40%; text-align: left;">
                 <ul style="list-style: none; padding: 0;">
@@ -142,6 +142,7 @@ def extract_header(md: str) -> str:
             break
         if line.startswith("- "):  # Collect lines starting with "- "
             items.append(line)
+    print("header:", items)
     return "\n".join(items)
 
 
@@ -229,7 +230,7 @@ def write_pdf(html: str, prefix: str = "resume", chrome: str = "") -> None:
         # https://developer.chrome.com/docs/chromium/new-headless.
         "--no-pdf-header-footer",
         "--enable-logging=stderr",
-        "--log-level=2",
+        "--log-level=1",
         "--in-process-gpu",
         "--disable-gpu",
     ]
@@ -242,7 +243,7 @@ def write_pdf(html: str, prefix: str = "resume", chrome: str = "") -> None:
     # https://bugs.python.org/issue26660. If we ever drop Python 3.9 support we
     # can use TemporaryDirectory with ignore_cleanup_errors=True as a context
     # manager.
-    tmpdir = tempfile.mkdtemp(prefix="resume.md_")
+    tmpdir = tempfile.mkdtemp(prefix="resume_english.md_")
     options.append(f"--crash-dumps-dir={tmpdir}")
     options.append(f"--user-data-dir={tmpdir}")
 
@@ -275,8 +276,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "file",
-        help="markdown input file [resume.md]",
-        default="resume.md",
+        help="markdown input file [resume_english.md]",
+        default="resume_english.md",
         nargs="?",
     )
     parser.add_argument(
