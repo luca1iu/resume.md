@@ -16,8 +16,8 @@ and
 Now, with the latest feature, you can also include an avatar image in your resume!
 
 1. Place the `avatar.png` with your avatar or change `avatar_path` to your avatar path in
-   `resume_with_avatar_english.py`
-2. run `resume_with_avatar_english.py`
+   `resume_with_avatar_english.py` or `resume_with_avatar_german.py`.
+2. run `resume_with_avatar_english.py` or `resume_with_avatar_german.py`.
 
 ![image.png](assets/image.png)
 
